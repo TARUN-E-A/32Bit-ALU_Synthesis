@@ -1,4 +1,4 @@
-# 32Bit-ALU_Synthesis
+# 5. 32Bit-ALU_Synthesis
 
 ## Aim:
 
@@ -34,12 +34,64 @@ used.
 • The tool used for Synthesis is “Genus”. Hence, type “genus -gui” to open the tool.
 
 • Genus Script file with .tcl file Extension commands are executed one by one to synthesize the netlist.
+### alu_32bit.v
+```
+module alu_32bit_case(y,a,b,f);
+input [31:0]a;
+input [31:0]b;
+input [2:0]f;
+output reg [31:0]y;
+always@(*)
+begin
+case(f)
+3'b000:y=a&b; //AND Operation
+3'b001:y=a|b; //OR Operation
+3'b010:y=~(a&b); //NAND Operation
+3'b011:y=~(a|b); //NOR Operation
+3'b100:y=a^b; //XOR Operation
+3'b101:y=~(a^b); //XNOR Operation
+3'b110:y=~a; //NOT of a
+3'b111:y=~b; //NOT of b
+endcase
+end
+endmodule
+```
+### run.tcl
+```
+read_libs /cadence/install/FOUNDRY-01/digital/90nm/dig/lib/slow.lib
+read_hdl alu_32bit.v
+elaborate
+ 
+syn_generic
+report_area
+syn_map
+report_area
+syn_opt
+report_area 
+
+report_area > alu_32bit_area.txt
+report_power > alu_32bit_power.txt
+report_area > alu_32bit_cell.txt
+report_gates > alu_32bit_gates.txt
+
+write_hdl > alu_32bit_netlist.v
+
+gui_show
+```
+
 
 #### Synthesis RTL Schematic :
+![Screenshot 2024-11-24 181032](https://github.com/user-attachments/assets/991ff2a0-add5-4fc9-9149-06c26a3c6cd5)
+
+
 
 #### Area report:
+![Screenshot 2024-11-24 181359](https://github.com/user-attachments/assets/c9267825-cca9-4ea4-b46b-037b2982f748)
+
 
 #### Power Report:
+![Screenshot 2024-11-24 181426](https://github.com/user-attachments/assets/fb5182e8-8070-4f1d-b717-27d842f3173d)
+
 
 #### Result: 
 
